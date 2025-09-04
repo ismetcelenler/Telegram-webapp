@@ -16,10 +16,10 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();           // WebApp hazır bildir
-    tg.expand();          // mümkünse tam ekran aç
+    tg.ready();
+    tg.expand();
 
-    // Kullanıcı bilgisi varsa ekrana yaz
+
     const user = tg?.initDataUnsafe?.user;
     const el = document.getElementById('username');
 
@@ -30,7 +30,7 @@
                 'ID: ' + user.id;
         el.textContent = display;
     } else {
-        // Telegram dışı açılış veya yanlış bağlama durumunda
+
         el.textContent = 'Telegram içinden açmadınız';
     }
 </script>
