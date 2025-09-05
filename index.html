@@ -13,13 +13,42 @@
 </head>
 <body>
 <h1>Hoş geldin, <span id="username" class="badge">yükleniyor…</span></h1>
+<form id="userForm">
+    <label>Ad: <input type="text" name="name" required /></label><br /><br />
+    <label>Soyad: <input type="text" name="surname" required /></label><br /><br />
+    <label>Mesaj: <textarea name="message" required></textarea></label><br /><br />
+    <button type="submit">Gönder</button>
+</form>
+
+<p id="result"></p>
 
 <script>
+    document.getElementById("userForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const res = await fetch("http://localhost:5000/api/message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            const result = await res.json();
+            document.getElementById("result").textContent = result.message;
+        } catch (err) {
+            document.getElementById("result").textContent = "Bir hata oluştu!";
+            console.error(err);
+        }
+    });
+
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    tg.ready();           // WebApp hazır bildir
+    tg.expand();          // mümkünse tam ekran aç
 
-
+    // Kullanıcı bilgisi varsa ekrana yaz
     const user = tg?.initDataUnsafe?.user;
     const el = document.getElementById('username');
 
@@ -30,7 +59,7 @@
                 'ID: ' + user.id;
         el.textContent = display;
     } else {
-
+        // Telegram dışı açılış veya yanlış bağlama durumunda
         el.textContent = 'Telegram içinden açmadınız';
     }
 </script>
